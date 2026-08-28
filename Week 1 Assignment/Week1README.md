@@ -10,7 +10,7 @@ Program: samtools (Tools for alignments in the SAM format)
 Version: 1.24 (using htslib 1.24)
 
 
-9)
+7)
 (bioinfo)
 brianpraul@MacPraul-Strikes-Again ~/edu/bioinfo
 $ mkdir -p ~/edu/bioinfo/nested
@@ -23,7 +23,7 @@ $ cd nested
 brianpraul@MacPraul-Strikes-Again ~/edu/bioinfo/nested
 
 
-10)
+8)
 (bioinfo)
 brianpraul@MacPraul-Strikes-Again ~/edu/bioinfo
 $ touch ~/edu/bioinfo/nested/test2.txt
@@ -44,7 +44,7 @@ $ touch ../test3.txt
 brianpraul@MacPraul-Strikes-Again ~/edu/bioinfo
 
 
-10)
+9)
 (bioinfo)
 brianpraul@MacPraul-Strikes-Again ~/edu/bioinfo
 $ open ./test.txt
