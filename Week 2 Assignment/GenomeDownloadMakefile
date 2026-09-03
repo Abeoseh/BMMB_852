@@ -1,0 +1,24 @@
+SHELL := /bin/sh
+
+# Override these when needed, for example: make download ACCESSION=NM_000546
+DB ?= nuccore
+FORMAT ?= gb
+OUT ?= $(ACCESSION).$(FORMAT)
+NCBI_EFETCH := https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi
+
+.PHONY: download clean
+
+download:
+	@test -n "$(ACCESSION)" || { echo "Usage: make download ACCESSION=<accession> [DB=nuccore] [FORMAT=gb] [OUT=file]" >&2; exit 1; }
+	@curl --fail --location --retry 3 --retry-delay 2 \
+		--get "$(NCBI_EFETCH)" \
+		--data-urlencode "db=$(DB)" \
+		--data-urlencode "id=$(ACCESSION)" \
+		--data-urlencode "rettype=$(FORMAT)" \
+		--data-urlencode "retmode=text" \
+		--output "$(OUT)"
+	@echo "Downloaded $(ACCESSION) to $(OUT)"
+
+clean:
+	@test -n "$(ACCESSION)" || { echo "Usage: make clean ACCESSION=<accession> [FORMAT=gb] [OUT=file]" >&2; exit 1; }
+	@rm -f "$(OUT)"
