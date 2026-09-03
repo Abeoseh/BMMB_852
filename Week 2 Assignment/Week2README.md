@@ -90,6 +90,8 @@ On the reverse strand it could be part of a:
 ``Alanine (GCA)``
 
 <a href="https://ibb.co/Dg7ZQLmf"><img src="https://i.ibb.co/LhC31vBd/Screenshot-2026-09-03-at-2-22-40-PM.png" alt="Screenshot-2026-09-03-at-2-22-40-PM" border="0"></a>
+
+<a href="https://ibb.co/v4Vv02RG"><img src="https://i.ibb.co/XxjkcmMg/Screenshot-2026-09-03-at-2-56-29-PM.png" alt="Screenshot-2026-09-03-at-2-56-29-PM" border="0"></a>
 #
 
 #
