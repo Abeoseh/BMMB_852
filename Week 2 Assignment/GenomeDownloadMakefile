@@ -1,37 +1,26 @@
 SHELL := /bin/sh
 
-# Override these when needed, for example: make download ACCESSION=NM_000546
-DB ?= nuccore
+# Override these when needed, for example: make download ACCESSION=GCF_000005845.2
 FASTA_OUT ?= $(ACCESSION).fasta
 GFF_OUT ?= $(ACCESSION).gff
-NCBI_EFETCH := https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi
-NCBI_SVIEWER := https://www.ncbi.nlm.nih.gov/sviewer/viewer.fcgi
+NCBI_DATASETS := https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession
 
 .PHONY: download clean
 
 download:
-	@test -n "$(ACCESSION)" || { echo "Usage: make download ACCESSION=<accession> [DB=nuccore] [FASTA_OUT=file] [GFF_OUT=file]" >&2; exit 1; }
+	@test -n "$(ACCESSION)" || { echo "Usage: make download ACCESSION=<assembly-accession> [FASTA_OUT=file] [GFF_OUT=file]" >&2; exit 1; }
 	@tmpdir=$$(mktemp -d); \
 		trap 'rm -rf "$$tmpdir"' EXIT INT TERM; \
 		set -e; \
-		curl --fail --location --retry 3 --retry-delay 2 \
-		--get "$(NCBI_EFETCH)" \
-		--data-urlencode "db=$(DB)" \
-		--data-urlencode "id=$(ACCESSION)" \
-		--data-urlencode "rettype=fasta" \
-		--data-urlencode "retmode=text" \
-		--output "$$tmpdir/sequence.fasta"; \
-		curl --fail --location --retry 3 --retry-delay 2 \
-			--get "$(NCBI_SVIEWER)" \
-			--data-urlencode "id=$(ACCESSION)" \
-			--data-urlencode "db=$(DB)" \
-			--data-urlencode "report=gff3" \
-			--data-urlencode "retmode=text" \
-			--output "$$tmpdir/annotations.gff"; \
+		curl --fail --location --retry 5 --retry-all-errors --retry-delay 5 \
+			--output "$$tmpdir/genome.zip" \
+			"$(NCBI_DATASETS)/$(ACCESSION)/download?include_annotation_type=GENOME_FASTA,GENOME_GFF"; \
+		unzip -p "$$tmpdir/genome.zip" '*genomic.fna' > "$$tmpdir/sequence.fasta"; \
+		unzip -p "$$tmpdir/genome.zip" '*genomic.gff' > "$$tmpdir/annotations.gff"; \
 		mv "$$tmpdir/sequence.fasta" "$(FASTA_OUT)"; \
 		mv "$$tmpdir/annotations.gff" "$(GFF_OUT)"
 	@echo "Downloaded $(ACCESSION) to $(FASTA_OUT) and $(GFF_OUT)"
 
 clean:
-	@test -n "$(ACCESSION)" || { echo "Usage: make clean ACCESSION=<accession> [FASTA_OUT=file] [GFF_OUT=file]" >&2; exit 1; }
+	@test -n "$(ACCESSION)" || { echo "Usage: make clean ACCESSION=<assembly-accession> [FASTA_OUT=file] [GFF_OUT=file]" >&2; exit 1; }
 	@rm -f "$(FASTA_OUT)" "$(GFF_OUT)"
