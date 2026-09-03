@@ -13,7 +13,8 @@ download:
 	@test -n "$(ACCESSION)" || { echo "Usage: make download ACCESSION=<accession> [DB=nuccore] [FASTA_OUT=file] [GFF_OUT=file]" >&2; exit 1; }
 	@tmpdir=$$(mktemp -d); \
 		trap 'rm -rf "$$tmpdir"' EXIT INT TERM; \
-	@curl --fail --location --retry 3 --retry-delay 2 \
+		set -e; \
+		curl --fail --location --retry 3 --retry-delay 2 \
 		--get "$(NCBI_EFETCH)" \
 		--data-urlencode "db=$(DB)" \
 		--data-urlencode "id=$(ACCESSION)" \
